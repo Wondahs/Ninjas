@@ -12,7 +12,7 @@ export class NinjasService {
 	}
 
 	async findNinja(id: number) {
-		const ninja = this.prisma.ninjas.findUnique({
+		const ninja = await this.prisma.ninjas.findUnique({
 			where: {
 				id
 			},
@@ -23,24 +23,30 @@ export class NinjasService {
 	}
 
 	async createNinja(createNinjaDto: CreateNinjaDto) {
-		return this.prisma.ninjas.create({
+		return await this.prisma.ninjas.create({
 			data: createNinjaDto,
 		});
 	}
 
 	async updateNinja(id: number,  updatedNinja: UpdateNinjaDto) {
-		const ninja = this.prisma.ninjas.update({
-			where: {id},
-			data: updatedNinja,
-		});
-		if (!ninja) throw new Error('Ninja not found');
-		return ninja;
+		try{
+			return await this.prisma.ninjas.update({
+				where: {id},
+				data: updatedNinja,
+			});
+		} catch (error) {
+			throw new NotFoundException(`Ninja with id ${id} not found`);
+		}
 	}
 
 	async deleteNinja(id: number) {
-		return this.prisma.ninjas.delete({
-			where: {id}
-		});
+		try{
+			return await this.prisma.ninjas.delete({
+				where: {id}
+			});
+		} catch (error) {
+			throw new NotFoundException(`Ninja with id ${id} not found`);
+		}
 	}
 
 }
