@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import {CreateNinjaDto} from './create-ninjas.dto';
 import { UpdateNinjaDto} from './update-ninjas.dto';
@@ -18,7 +18,7 @@ export class NinjasService {
 			},
 		});
 
-		if (!ninja) return {'404': 'Ninja not found'};
+		if (!ninja) throw new NotFoundException(`Ninja with id ${id} not found`)
 		return ninja;
 	}
 
